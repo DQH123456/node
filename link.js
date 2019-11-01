@@ -4,10 +4,12 @@ const path = require('path');
 const url = require('url');
 const queryString = require('querystring');
 const chapterList = require('./word');
-const userList = require('./Data');
+//const userList = require('./Data');
 
 http.createServer((req,res)=>{
-    
+    var userList = [
+        {username: "111", pwd: "111"}
+    ];
     var urlObj = url.parse(req.url);
     var pathName = urlObj.pathname;
     if(pathName == '/list'){
@@ -25,22 +27,21 @@ http.createServer((req,res)=>{
             var user = queryString.parse(userData);
             var username = user.username;
             var password = user.password;
-            console.log(username,password);
-            // for(var i = 0;i<userList.length;i++){
-                if(userList.username==username&&userList.pwd==password){
-                    var data = false;
-                    console.log(data);
+            var data = false;
+            for(var i = 0;i<userList.length;i++){
+                console.log(userList[i]);
+                if(userList[i].username==username&&userList[i].pwd==password){
+                    data = true;
                     res.writeHead(200,{"Content-type":"application/json"});
                     res.end(JSON.stringify(data));
+                    break;
                 }
-            
-                else{
-                    data = true;
-                    console.log(data);
+            }
+                if(data == false){
                     res.writeHead(200,{"Content-Type":"application/json"});
                     res.end(JSON.stringify(data));
+
                 }
-            //}
         })
     }
     else if(pathName =='/listmanager'){
@@ -82,13 +83,8 @@ http.createServer((req,res)=>{
             var New = {
                 chapterId:chapterList[chapterList.length - 1].chapterId + 1,
                 chapterName:art.title,
-                imgPath:"",
-                chapterDes:art.content,
-                chapterContent:art.content,
-                publishTimer:'2019-10-23',
-                author:'111',
-                views:'100'
             }
+            console.log(New);
             chapterList.push(New);
             data = {code:0};
             res.writeHead(200,{'Content-Type':'application/json'});
